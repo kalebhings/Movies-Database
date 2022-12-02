@@ -9,16 +9,16 @@ cursor.execute("CREATE TABLE IF NOT EXISTS service (serviceId INTEGER PRIMARY KE
 cursor.execute("CREATE TABLE IF NOT EXISTS movie (movieId INTEGER PRIMARY KEY AUTOINCREMENT, movieName TEXT, movieStudio TEXT, movieYear YEAR, serviceId INTEGER)")
 
 def get_name(cursor):
-    cursor.execute("SELECT name FROM movies")
+    cursor.execute("SELECT movieId, movieName FROM movie")
     results = cursor.fetchall()
     if len(results) == 0:
         print("No movies in database")
         return None
     for i in range(len(results)):
-        print(f"{i+1} - {results[i][0]}")
+        print(f"{results[i][0], results[i][1]}")
     choice = 0
     while choice < 1 or choice > len(results):
-        choice = int(input("Name ID: "))
+        choice = int(input("Movie ID: "))
     return results[choice-1][0]
 
 
@@ -74,17 +74,17 @@ while choice != "8":
             print("{:>10}  {:>10}".format(record[0], record[1]))
     elif choice == "6":
         # Delete movie
-        movieName = get_name(cursor)
-        if movieName == None:
+        movieId = get_name(cursor)
+        if movieId == None:
             continue
-        values = (movieName, )
-        cursor.execute("DELETE FROM movie WHERE movieName = ?", values)
+        values = (movieId, )
+        cursor.execute("DELETE FROM movie WHERE movieId = ?", values)
         conn.commit()       
     elif choice == "7":
         # Update Movie Name
         try:
-            movieName = input("Name: ")
             movieId = (input("MovieId: "))
+            movieName = input("New Name: ")
             values = (movieName, movieId) # Make sure order is correct
             cursor.execute("UPDATE movie SET movieName = ? WHERE movieId = ?", values)
             conn.commit()
