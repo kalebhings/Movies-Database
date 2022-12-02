@@ -6,7 +6,7 @@ I decided to write this program so that I could integrate my SQL skills with my 
 
 To use the program, you select the menu option that you want to do. Adding data will ask for each item individually. To add a movie, you need to know the streaming service id, so you will want to do display streaming locations first to view that.
 
-[Software Demo Video](http://youtube.link.goes.here)
+[Software Demo Video](https://youtu.be/s3s-DxzBP_A)
 
 # Relational Database
 
