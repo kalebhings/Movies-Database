@@ -68,7 +68,7 @@ while choice != "8":
         conn.commit()
     elif choice == "5": 
         # Perform Join to view which movies are on which services
-        cursor.execute("SELECT movieName, serviceName ORDER BY serviceName DESC FROM movie INNER JOIN service ON movie.serviceId=service.serviceId")
+        cursor.execute("SELECT movieName, serviceName FROM movie INNER JOIN service ON movie.serviceId=service.serviceId ORDER BY serviceName DESC")
         print("{:>10}  {:>10}".format("movieName", "serviceName"))
         for record in cursor.fetchall():
             print("{:>10}  {:>10}".format(record[0], record[1]))
