@@ -5,8 +5,8 @@ connection = sqlite3.connect('movies.db')
 cursor = connection.cursor()
 
 # Create table (if it does not already exist)
-cursor.execute("CREATE TABLE IF NOT EXISTS service (serviceId INT NOT NULL AUTO_INCREMENT, serviceName TEXT)")
-cursor.execute("CREATE TABLE IF NOT EXISTS movie (movieId INT NOT NULL AUTO_INCREMENT, movieName TEXT, movieStudio TEXT, movieYear YEAR, serviceId INT)")
+cursor.execute("CREATE TABLE IF NOT EXISTS service (serviceId INTEGER PRIMARY KEY AUTOINCREMENT, serviceName TEXT)")
+cursor.execute("CREATE TABLE IF NOT EXISTS movie (movieId INTEGER PRIMARY KEY AUTOINCREMENT, movieName TEXT, movieStudio TEXT, movieYear YEAR, serviceId INTEGER)")
 
 def get_name(cursor):
     cursor.execute("SELECT name FROM movies")
@@ -50,8 +50,8 @@ while choice != "8":
         # Add New Service
         try:
             serviceName = input("serviceName: ")
-            values = (serviceName)
-            cursor.execute("INSERT INTO service VALUES (?)", values)
+            values = (serviceId, serviceName)
+            cursor.execute("INSERT INTO service VALUES (?, ?)", values)
             connection.commit()
         except ValueError:
             print("Invalid name!")
@@ -62,11 +62,14 @@ while choice != "8":
         movieYear = (input("movieYear: "))
         serviceId = (input("Service Id: "))
         values = (movieName, movieStudio, movieYear, serviceId)
-        cursor.execute("INSERT INTO movie VALUES (?,?,?, ?)", values)
+        cursor.execute("INSERT INTO movie VALUES (?,?,?,?,?)", values)
         connection.commit()
     elif choice == "5": 
         # Perform Join to view which movies are on which services
-        print()
+        cursor.execute("SELECT movieName, serviceName FROM movie INNER JOIN service ON movie.serviceId=service.serviceId")
+        print("{:>10}  {:>10}".format("movieName", "serviceName"))
+        for record in cursor.fetchall():
+            print("{:>10}  {:>10}".format(record[0], record[1]))
     elif choice == "6":
         # Delete movie
         movieName = get_name(cursor)
