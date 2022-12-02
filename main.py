@@ -1,8 +1,8 @@
 import sqlite3
 
 # Connect to the database
-connection = sqlite3.connect('movies.db')
-cursor = connection.cursor()
+conn = sqlite3.connect('movies.db')
+cursor = conn.cursor()
 
 # Create table (if it does not already exist)
 cursor.execute("CREATE TABLE IF NOT EXISTS service (serviceId INTEGER PRIMARY KEY AUTOINCREMENT, serviceName TEXT)")
@@ -53,7 +53,7 @@ while choice != "8":
             serviceName = input("serviceName: ")
             values = (serviceId, serviceName)
             cursor.execute("INSERT INTO service VALUES (?, ?)", values)
-            connection.commit()
+            conn.commit()
         except ValueError:
             print("Invalid name!")
     elif choice == "4": 
@@ -65,7 +65,7 @@ while choice != "8":
         serviceId = (input("Service Id: "))
         values = (movieId, movieName, movieStudio, movieYear, serviceId)
         cursor.execute("INSERT INTO movie VALUES (?,?,?,?,?)", values)
-        connection.commit()
+        conn.commit()
     elif choice == "5": 
         # Perform Join to view which movies are on which services
         cursor.execute("SELECT movieName, serviceName FROM movie INNER JOIN service ON movie.serviceId=service.serviceId")
@@ -79,7 +79,7 @@ while choice != "8":
             continue
         values = (movieName, )
         cursor.execute("DELETE FROM movie WHERE movieName = ?", values)
-        connection.commit()       
+        conn.commit()       
     elif choice == "7":
         # Update Movie Name
         try:
@@ -87,7 +87,7 @@ while choice != "8":
             movieId = (input("MovieId: "))
             values = (movieName, movieId) # Make sure order is correct
             cursor.execute("UPDATE movie SET movieName = ? WHERE movieId = ?", values)
-            connection.commit()
+            conn.commit()
             if cursor.rowcount == 0:
                 print("Invalid name!")
         except ValueError:
@@ -96,4 +96,4 @@ while choice != "8":
     print()
 
 # Close the database connection before exiting
-connection.close()
+conn.close()
