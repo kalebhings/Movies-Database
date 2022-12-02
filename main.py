@@ -8,6 +8,7 @@ cursor = conn.cursor()
 cursor.execute("CREATE TABLE IF NOT EXISTS service (serviceId INTEGER PRIMARY KEY AUTOINCREMENT, serviceName TEXT)")
 cursor.execute("CREATE TABLE IF NOT EXISTS movie (movieId INTEGER PRIMARY KEY AUTOINCREMENT, movieName TEXT, movieStudio TEXT, movieYear YEAR, serviceId INTEGER)")
 
+# This function retrieves all of the movie name and ID from the movie table for the delete function and prints them.
 def get_name(cursor):
     cursor.execute("SELECT movieId, movieName FROM movie")
     results = cursor.fetchall()
