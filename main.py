@@ -36,7 +36,7 @@ while choice != "8":
     print()
     if choice == "1":
         # Display Movies
-        cursor.execute("SELECT movieId, movieName, movieStudio, movieYear FROM movie ORDER BY movieYear DESC")
+        cursor.execute("SELECT movieId, movieName, movieStudio, movieYear FROM movie")
         print("{:>10}  {:>10}  {:>10} {:>10}".format("movieId", "movieName", "movieStudio", "movieYear"))
         for record in cursor.fetchall():
             print("{:>10}  {:>10}  {:>10} {:>10}".format(record[0], record[1], record[2], record[3]))
@@ -49,6 +49,7 @@ while choice != "8":
     elif choice == "3":
         # Add New Service
         try:
+            serviceId = None            
             serviceName = input("serviceName: ")
             values = (serviceId, serviceName)
             cursor.execute("INSERT INTO service VALUES (?, ?)", values)
@@ -57,11 +58,12 @@ while choice != "8":
             print("Invalid name!")
     elif choice == "4": 
         # Add New Movie
+        movieId = None
         movieName = input("movieName: ")
         movieStudio = input("movieStudio: ")
         movieYear = (input("movieYear: "))
         serviceId = (input("Service Id: "))
-        values = (movieName, movieStudio, movieYear, serviceId)
+        values = (movieId, movieName, movieStudio, movieYear, serviceId)
         cursor.execute("INSERT INTO movie VALUES (?,?,?,?,?)", values)
         connection.commit()
     elif choice == "5": 
