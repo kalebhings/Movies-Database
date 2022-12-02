@@ -5,8 +5,8 @@ connection = sqlite3.connect('movies.db')
 cursor = connection.cursor()
 
 # Create table (if it does not already exist)
-cursor.execute("CREATE TABLE IF NOT EXISTS movie (movieId int NOT NULL AUTO_INCREMENT, movieName TEXT, movieStudio TEXT, movieYear YEAR)")
-cursor.execute("CREATE TABLE IF NOT EXISTS service (serviceId int NOT NULL AUTO_INCREMENT, serviceName TEXT)")
+cursor.execute("CREATE TABLE IF NOT EXISTS service (serviceId INT NOT NULL AUTO_INCREMENT, serviceName TEXT)")
+cursor.execute("CREATE TABLE IF NOT EXISTS movie (movieId INT NOT NULL AUTO_INCREMENT, movieName TEXT, movieStudio TEXT, movieYear YEAR, serviceId INT)")
 
 def get_name(cursor):
     cursor.execute("SELECT name FROM movies")
@@ -23,56 +23,71 @@ def get_name(cursor):
 
 
 choice = None
-while choice != "5":
+while choice != "8":
     print("1) Display Movies")
     print("2) Display Streaming Locations")
-    print("3) Add Movie")
-    print("4) Add Streaming Service")
-    print("3) Update Employee Pay")
-    print("4) Delete Movie")
-    print("5) Quit")
+    print("3) Add Streaming Service")
+    print("4) Add Movie")
+    print("5) Display Where To Watch Movies")
+    print("6) Delete Movie")
+    print("7) Modify Movie Name")
+    print("8) Quit")
     choice = input("> ")
     print()
     if choice == "1":
         # Display Movies
-        cursor.execute("SELECT * FROM movie ORDER BY movieYear DESC")
-        print("{:>10}  {:>10}  {:>10}".format("movieId", "movieName", "movieStudio", "movieYear"))
+        cursor.execute("SELECT movieId, movieName, movieStudio, movieYear FROM movie ORDER BY movieYear DESC")
+        print("{:>10}  {:>10}  {:>10} {:>10}".format("movieId", "movieName", "movieStudio", "movieYear"))
         for record in cursor.fetchall():
-            print("{:>10}  {:>10}  {:>10}".format(record[0], record[1], record[2], record[3], record[4]))
+            print("{:>10}  {:>10}  {:>10} {:>10}".format(record[0], record[1], record[2], record[3]))
     elif choice == "2":
         # Display streaming services that the movies are on
         cursor.execute("SELECT * FROM service ORDER BY serviceName")
+        print("{:>10}  {:>10}".format("serviceId", "serviceName"))
+        for record in cursor.fetchall():
+            print("{:>10}  {:>10}".format(record[0], record[1]))
     elif choice == "3":
-        # Add New Employee
+        # Add New Service
         try:
-            name = input("Name: ")
-            title = input("Title: ")
-            pay = float(input("Pay: "))
-            values = (name, title, pay)
-            cursor.execute("INSERT INTO employees VALUES (?,?,?)", values)
+            serviceName = input("serviceName: ")
+            values = (serviceName)
+            cursor.execute("INSERT INTO service VALUES (?)", values)
             connection.commit()
         except ValueError:
-            print("Invalid pay!")
-    elif choice == "4":
-        # Update Employee Pay
+            print("Invalid name!")
+    elif choice == "4": 
+        # Add New Movie
+        movieName = input("movieName: ")
+        movieStudio = input("movieStudio: ")
+        movieYear = (input("movieYear: "))
+        serviceId = (input("Service Id: "))
+        values = (movieName, movieStudio, movieYear, serviceId)
+        cursor.execute("INSERT INTO movie VALUES (?,?,?, ?)", values)
+        connection.commit()
+    elif choice == "5": 
+        # Perform Join to view which movies are on which services
+        print()
+    elif choice == "6":
+        # Delete movie
+        movieName = get_name(cursor)
+        if movieName == None:
+            continue
+        values = (movieName, )
+        cursor.execute("DELETE FROM movie WHERE movieName = ?", values)
+        connection.commit()       
+    elif choice == "7":
+        # Update Movie Name
         try:
-            name = input("Name: ")
-            pay = float(input("Pay: "))
-            values = (pay, name) # Make sure order is correct
-            cursor.execute("UPDATE employees SET pay = ? WHERE name = ?", values)
+            movieName = input("Name: ")
+            movieId = (input("MovieId: "))
+            values = (movieName, movieId) # Make sure order is correct
+            cursor.execute("UPDATE movie SET movieName = ? WHERE movieId = ?", values)
             connection.commit()
             if cursor.rowcount == 0:
                 print("Invalid name!")
         except ValueError:
-            print("Invalid pay!")
-    elif choice == "5":
-        # Delete employee
-        name = get_name(cursor)
-        if name == None:
-            continue
-        values = (name, )
-        cursor.execute("DELETE FROM employees WHERE name = ?", values)
-        connection.commit()
+            print("Invalid id!")
+
     print()
 
 # Close the database connection before exiting
